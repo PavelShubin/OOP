@@ -7,55 +7,63 @@ Money::Money() noexcept: digits(nullptr), size(0) {}
 
 Money::Money(const size_t t, unsigned char a): digits(new unsigned char[t]), size(t)
 {
-    if (a < 0 || a > 9) {
-        throw std::invalid_argument("Invalid value\n");
+    if (a < '0' || a > '9') {
+        throw std::invalid_argument("Invalid value");
     }
     for (int i = 0; i < size; i++) {
-        digits[i] = a;
+        digits[i] = a - '0';
     }
 }
 
-Money::Money(const std::initializer_list<unsigned char> &t) : digits(new unsigned char[t.size()]), size(t.size())
+Money::Money(const std::initializer_list<unsigned char> &t) : digits(nullptr), size(t.size())
 {
-    std::copy(t.begin(), t.end(), digits);
+    if (size == 0) {
+        throw std::invalid_argument("List can't be empty");
+    }
+    
+    for (auto& elem: t) {
+        if (elem < '0' or elem > '9') {
+            throw std::invalid_argument("Must be only digits");
+        }
+    }
+    digits = new unsigned char[size];
+    int i = size;
+    for (auto& elem: t) {
+        i--;
+        digits[i] = elem - '0';
+    }
 }
 
-Money::Money(const unsigned char* s_digits)
+Money::Money(const unsigned char* s_digits, size_t l) : digits(nullptr)
 {
     if (s_digits == nullptr) {
-        throw std::invalid_argument("can't be nullptr\n");
+        throw std::invalid_argument("can't be nullptr");
     }
-    size = strlen(reinterpret_cast<const char*>(s_digits));
+    size = l;
+
+    for (int i = 0; i < size; i++) {
+        if (s_digits[i] < 0 || s_digits[i] > 9) {
+            throw std::invalid_argument("Invalid money value");
+        }
+    }
 
     digits = new unsigned char[size];
 
     for (int i = 0; i < size; i++) {
-        if (s_digits[i] < 0 || s_digits[i] > 9) {
-            throw std::invalid_argument("Invalid money value\n");
-        }
         digits[i] = s_digits[i];
     }
 }
 
-Money::Money(const std::string &t) : digits(new unsigned char[t.length() - 1]), size(t.length() - 1)
+Money::Money(const std::string &t) : digits(new unsigned char[t.length()]), size(t.length())
 {
-    bool flag = false;
-    int mark = size - 1;
-    for (size_t i = 0; i < size + 1; i++)
-    {
-        if (t[i] == '.') {
-            if (flag) {
-                throw std::invalid_argument("Trouble with dot. Must be 'xxxx.xx'\n");
-            }
-            flag = true;
-            if (i != size - 2) { throw std::invalid_argument("Trouble with dot. Must be 'xxxx.xx'\n"); }
-            continue;
+    if (size == 0) {
+        throw std::invalid_argument("Can't be empty");
+    }
+    for (int i = 0; i < size; i++) {
+        if (t[i] < '0' || t[i] > '9') {
+            throw std::invalid_argument("Only digits");
         }
-        if (!std::isdigit(t[i]))
-            throw std::invalid_argument("Invalid money value. Must be 'xxxx.xx'\n");
-
-        digits[mark] = t[i] - '0';
-        mark--;
+        digits[size - i - 1] = t[i] - '0';
     }
 }
 
@@ -101,34 +109,62 @@ Money& Money::operator=(Money &&other) noexcept
 
 Money Money::operator+(const Money &other) const
 {
-    size_t M_size;
-    if (size > other.size) {
-        M_size = size;
-    } else {
-        M_size = other.size;
-    }
-    unsigned char *data = new unsigned char[M_size];
+    size_t max_size = std::max(size, other.size);
+    unsigned char *result = new unsigned char[max_size];
     unsigned char temp = 0;
-    for (int i = 0; i < M_size; i++) {
-        if (i < size) {
-            temp += digits[i];
-        }
-        if (i < other.size) {
-            temp += other.digits[i];
-        }
-        data[i] = temp % 10;
-        temp /= 10;
+    unsigned char first, second;
+    for (int i = 0; i < max_size; i++) {
+        first = (i < size) ? digits[i] : 0;
+        second = (i < other.size) ? other.digits[i] : 0;
+        unsigned char sum = first + second + temp;
+        result[i] = sum % 10;
+        temp = sum / 10;
     }
-    if (temp != 0) {
-        unsigned char *new_data = new unsigned char[M_size + 1];
-        std::copy(data, data + size, new_data);
-        delete[] data;
-        new_data[M_size] = temp;
-        Money ans(new_data);
-        return ans;
+    if (temp > 0) {
+        unsigned char *temp_result = new unsigned char[max_size + 1];
+        std::copy(result, result + max_size, temp_result);
+        temp_result[max_size] = temp;
+        delete[] result;
+        result = temp_result;
+        max_size += 1;
     }
-    Money ans(data);
-    return ans;
+    Money m(result, max_size);
+    delete[] result;
+    return m;
+}
+
+Money Money::operator-(const Money &other) const
+{
+    if (*this < other) {
+        throw std::invalid_argument("Result is negative");
+    }
+
+    size_t max_size = std::max(size, other.size);
+    unsigned char *result = new unsigned char[max_size];
+    unsigned char temp = 0;
+    unsigned char first, second;
+    for (int i = 0; i < max_size; i++) {
+        first = (i < size) ? digits[i] : 0;
+        second = (i < other.size) ? other.digits[i] : 0;
+        unsigned char diff = first - second - temp;
+        if (diff > first) {
+            diff += 10;
+            temp = 1;
+        } else {
+            temp = 0;
+        }
+        result[i] = diff;
+    }
+
+    int new_size = max_size;
+    while (result[new_size - 1] == 0 && new_size > 1) {
+        new_size--;
+    }
+
+    Money m(result, new_size);
+    delete[] result;
+    return m;
+
 }
 
 bool Money::operator==(const Money &other) const
@@ -197,7 +233,7 @@ Money::operator int() const noexcept
     return result;
 }
 
-size_t Money::lenght() const noexcept
+size_t Money::length() const noexcept
 {
     return size;
 }

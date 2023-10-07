@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblw2_lib.a CMakeFiles/lw2_lib.dir/money.cpp.o
+/usr/bin/ranlib liblw2_lib.a

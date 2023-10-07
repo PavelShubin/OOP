@@ -10,7 +10,6 @@ public:
     // Construsctors
     Money() noexcept;
     Money(const size_t, unsigned char);
-    Money(const unsigned char*);
     Money(const std::initializer_list<unsigned char>&);
     Money(const std::string&);
     Money(const Money&);
@@ -36,12 +35,13 @@ public:
     operator int() const noexcept;
 
     // Size
-    size_t lenght() const noexcept;
+    size_t length() const noexcept;
 
     // Print
     void print() const;
 
 private:
+    Money(const unsigned char*, size_t);
     unsigned char *digits; // массив цифр
     size_t size; // размер массива
 };

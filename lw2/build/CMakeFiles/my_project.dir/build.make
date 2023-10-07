@@ -69,19 +69,19 @@ include CMakeFiles/my_project.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/my_project.dir/flags.make
 
-CMakeFiles/my_project.dir/main.cpp.o: CMakeFiles/my_project.dir/flags.make
-CMakeFiles/my_project.dir/main.cpp.o: ../main.cpp
-CMakeFiles/my_project.dir/main.cpp.o: CMakeFiles/my_project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pavel/OOP/lw2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/my_project.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_project.dir/main.cpp.o -MF CMakeFiles/my_project.dir/main.cpp.o.d -o CMakeFiles/my_project.dir/main.cpp.o -c /home/pavel/OOP/lw2/main.cpp
+CMakeFiles/my_project.dir/test.cpp.o: CMakeFiles/my_project.dir/flags.make
+CMakeFiles/my_project.dir/test.cpp.o: ../test.cpp
+CMakeFiles/my_project.dir/test.cpp.o: CMakeFiles/my_project.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pavel/OOP/lw2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/my_project.dir/test.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_project.dir/test.cpp.o -MF CMakeFiles/my_project.dir/test.cpp.o.d -o CMakeFiles/my_project.dir/test.cpp.o -c /home/pavel/OOP/lw2/test.cpp
 
-CMakeFiles/my_project.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_project.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pavel/OOP/lw2/main.cpp > CMakeFiles/my_project.dir/main.cpp.i
+CMakeFiles/my_project.dir/test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_project.dir/test.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pavel/OOP/lw2/test.cpp > CMakeFiles/my_project.dir/test.cpp.i
 
-CMakeFiles/my_project.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_project.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pavel/OOP/lw2/main.cpp -o CMakeFiles/my_project.dir/main.cpp.s
+CMakeFiles/my_project.dir/test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_project.dir/test.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pavel/OOP/lw2/test.cpp -o CMakeFiles/my_project.dir/test.cpp.s
 
 CMakeFiles/my_project.dir/money.cpp.o: CMakeFiles/my_project.dir/flags.make
 CMakeFiles/my_project.dir/money.cpp.o: ../money.cpp
@@ -99,13 +99,13 @@ CMakeFiles/my_project.dir/money.cpp.s: cmake_force
 
 # Object files for target my_project
 my_project_OBJECTS = \
-"CMakeFiles/my_project.dir/main.cpp.o" \
+"CMakeFiles/my_project.dir/test.cpp.o" \
 "CMakeFiles/my_project.dir/money.cpp.o"
 
 # External object files for target my_project
 my_project_EXTERNAL_OBJECTS =
 
-my_project: CMakeFiles/my_project.dir/main.cpp.o
+my_project: CMakeFiles/my_project.dir/test.cpp.o
 my_project: CMakeFiles/my_project.dir/money.cpp.o
 my_project: CMakeFiles/my_project.dir/build.make
 my_project: CMakeFiles/my_project.dir/link.txt

@@ -117,48 +117,37 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named my_project
+# Target rules for targets named lw2_lib
 
 # Build rule for target.
-my_project: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 my_project
-.PHONY : my_project
+lw2_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lw2_lib
+.PHONY : lw2_lib
 
 # fast build rule for target.
-my_project/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/build
-.PHONY : my_project/fast
+lw2_lib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_lib.dir/build.make CMakeFiles/lw2_lib.dir/build
+.PHONY : lw2_lib/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+#=============================================================================
+# Target rules for targets named lw2_test
 
-# target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/main.cpp.o
-.PHONY : main.cpp.o
+# Build rule for target.
+lw2_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lw2_test
+.PHONY : lw2_test
 
-main.i: main.cpp.i
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/main.cpp.s
-.PHONY : main.cpp.s
+# fast build rule for target.
+lw2_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_test.dir/build.make CMakeFiles/lw2_test.dir/build
+.PHONY : lw2_test/fast
 
 money.o: money.cpp.o
 .PHONY : money.o
 
 # target to build an object file
 money.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/money.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_lib.dir/build.make CMakeFiles/lw2_lib.dir/money.cpp.o
 .PHONY : money.cpp.o
 
 money.i: money.cpp.i
@@ -166,7 +155,7 @@ money.i: money.cpp.i
 
 # target to preprocess a source file
 money.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/money.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_lib.dir/build.make CMakeFiles/lw2_lib.dir/money.cpp.i
 .PHONY : money.cpp.i
 
 money.s: money.cpp.s
@@ -174,8 +163,32 @@ money.s: money.cpp.s
 
 # target to generate assembly for a file
 money.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_project.dir/build.make CMakeFiles/my_project.dir/money.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_lib.dir/build.make CMakeFiles/lw2_lib.dir/money.cpp.s
 .PHONY : money.cpp.s
+
+test.o: test.cpp.o
+.PHONY : test.o
+
+# target to build an object file
+test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_test.dir/build.make CMakeFiles/lw2_test.dir/test.cpp.o
+.PHONY : test.cpp.o
+
+test.i: test.cpp.i
+.PHONY : test.i
+
+# target to preprocess a source file
+test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_test.dir/build.make CMakeFiles/lw2_test.dir/test.cpp.i
+.PHONY : test.cpp.i
+
+test.s: test.cpp.s
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lw2_test.dir/build.make CMakeFiles/lw2_test.dir/test.cpp.s
+.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -185,13 +198,14 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... my_project"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... lw2_lib"
+	@echo "... lw2_test"
 	@echo "... money.o"
 	@echo "... money.i"
 	@echo "... money.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

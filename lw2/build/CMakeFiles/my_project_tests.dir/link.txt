@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/my_project_tests.dir/test.cpp.o CMakeFiles/my_project_tests.dir/money.cpp.o -o my_project_tests  /usr/local/lib/libgtest.a -lpthread 

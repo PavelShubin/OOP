@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/pavel/OOP/lw2/money.cpp" "CMakeFiles/my_project.dir/money.cpp.o" "gcc" "CMakeFiles/my_project.dir/money.cpp.o.d"
-  "/home/pavel/OOP/lw2/test.cpp" "CMakeFiles/my_project.dir/test.cpp.o" "gcc" "CMakeFiles/my_project.dir/test.cpp.o.d"
+  "/home/pavel/OOP/lw2/money.cpp" "CMakeFiles/lw2_lib.dir/money.cpp.o" "gcc" "CMakeFiles/lw2_lib.dir/money.cpp.o.d"
   )
 
 # Targets to which this target links.

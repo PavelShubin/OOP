@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-project(my_project)
+project(lw2)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(my_project main.cpp money.cpp)
+add_library(${CMAKE_PROJECT_NAME}_lib money.cpp)
+target_link_directories(${CMAKE_PROJECT_NAME}_lib PUBLIC money.hpp)
+
+add_executable(${CMAKE_PROJECT_NAME}_test test.cpp)
+
+target_include_directories(${CMAKE_PROJECT_NAME}_test PRIVATE ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+target_link_libraries(${CMAKE_PROJECT_NAME}_test ${CMAKE_PROJECT_NAME}_lib gtest gtest_main)
+
+add_test(basic test_lw2)

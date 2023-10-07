@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/lw2_test.dir/test.cpp.o -o lw2_test   -L/home/pavel/OOP/lw2/money.hpp  -Wl,-rpath,/home/pavel/OOP/lw2/money.hpp liblw2_lib.a -lgtest -lgtest_main 

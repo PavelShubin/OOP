@@ -1,3 +1,4 @@
-/home/pavel/OOP/lw2/build/CMakeFiles/my_project.dir
+/home/pavel/OOP/lw2/build/CMakeFiles/lw2_lib.dir
+/home/pavel/OOP/lw2/build/CMakeFiles/lw2_test.dir
 /home/pavel/OOP/lw2/build/CMakeFiles/edit_cache.dir
 /home/pavel/OOP/lw2/build/CMakeFiles/rebuild_cache.dir
