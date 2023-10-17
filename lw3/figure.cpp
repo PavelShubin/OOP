@@ -4,6 +4,52 @@
 #include <string.h>
 #include <cmath>
 
+Figure& Figure::operator=(const Figure& other) noexcept
+{
+    if (this != &other) {
+        delete[] data;
+        data = new Point[other.quantity];
+        quantity = other.quantity;
+        std::copy(other.data, other.data + quantity, data);
+    }
+    return *this;
+}
+
+Figure& Figure::operator=(Figure &&other) noexcept
+{
+    if (this != &other) {
+        delete[] data;
+        data = other.data;
+        quantity = other.quantity;
+        other.data = nullptr;
+        other.quantity = 0;
+    }
+    return *this;
+}
+Figure::~Figure() noexcept
+{
+    delete[] data;
+    quantity = 0;
+}
+
+bool Figure::operator==(const Figure &other) const
+{
+    if (quantity != other.quantity) {
+        return false;
+    }
+    for (int i = 0; i < quantity; i++) {
+        if (!(data[i].x == other.data[i].x && data[i].y == other.data[i].y)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Figure::operator!=(const Figure &other) const
+{
+    return !(*this == other);
+}
+
 double Figure::calculateDistance(const Point& k1, const Point& k2) const
 {
     double xDiff = k2.x - k1.x;
@@ -11,63 +57,82 @@ double Figure::calculateDistance(const Point& k1, const Point& k2) const
     return sqrt(xDiff * xDiff + yDiff * yDiff);
 }
 
-
-Square::operator double() const noexcept {
-    return calculateDistance(p1, p2) * calculateDistance(p1, p2);
+std::ostream& operator<<(std::ostream& os, const Figure& figure) noexcept 
+{
+    for (int i = 1; i < figure.quantity + 1; i++) {
+        os << "Vertex " << i << ": (" << figure.data[i - 1].x << ", " << figure.data[i - 1].y << ")" << std::endl;
+    }
+    return os;
 }
 
-void Square::center() const noexcept
+void Figure::center() const noexcept
 {
-    std::cout << "geometric center: ";
-    double result = (p1.x + p2.x + p3.x + p4.x) / 4;
-    std::cout << "x:" << result << " ";
-    result = (p1.y + p2.y + p3.y + p4.y) / 4;
-    std::cout << "y:" << result << std::endl;
+    double s_x = 0;
+    double s_y = 0;
+    for (int i = 0; i < quantity; i++) {
+        s_x += data[i].x;
+        s_y += data[i].y;
+    }
+    s_x /= quantity;
+    s_y /= quantity;
+    std::cout << "Center of figure: (" << s_x << ", " << s_y << ")" << std::endl;
+}
+
+bool Figure::sides_parallel(const Point& k1, const Point& k2, const Point& k3, const Point& k4) const
+{
+    if (k1.y - k2.y == 0) {
+        return (k3.y - k4.y == 0);
+    }
+    if (k1.x - k2.x == 0) {
+        return (k3.x - k4.x == 0);
+    }
+
+
+    double slope1 = (k2.y - k1.y) / (k2.x - k1.x);
+    double slope2 = (k4.y - k3.y) / (k4.x - k3.x);\
+    
+    if (std::abs(slope1 - slope2) < 1e-6) {
+        return true;
+    }
+    return false;
+}
+
+
+
+Square::operator double() const noexcept {
+    double side = calculateDistance(data[0], data[1]);
+    return side * side;
+}
+
+bool Square::isValidSquare() const
+{
+    if (data[0].x == data[1].x && data[1].x == data[2].x) { return false; }
+    if (data[0].y == data[1].y && data[1].y == data[2].y) { return false; }
+    double side1 = calculateDistance(data[0], data[1]);
+    double side2 = calculateDistance(data[1], data[2]);
+    double side3 = calculateDistance(data[2], data[3]);
+    double side4 = calculateDistance(data[3], data[0]);
+
+    if (side1 == side2 && side2 == side3 && side3 == side4) {
+        double diagonal1 = calculateDistance(data[0], data[2]);
+        double diagonal2 = calculateDistance(data[1], data[3]);
+
+        return diagonal1 == diagonal2;
+    }
+    return false;
 }
 
 Square::Square(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    : p1(x1, y1), p2(x2, y2), p3(x3, y3), p4(x4, y4) {
+{   
+    data = new Point[4];
+    quantity = 4;
+    data[0] = Point(x1, y1);
+    data[1] = Point(x2, y2);
+    data[2] = Point(x3, y3);
+    data[3] = Point(x4, y4);
     if (!isValidSquare()) {
         throw std::runtime_error("Invalid square vertices");
     }
-}
-
-Square& Square::operator=(const Square& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-}
-
-Square& Square::operator=(Square&& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-}
-
-bool Square::operator==(const Square& other) const noexcept
-{
-    return (p1.x == other.p1.x && p1.y == other.p1.y &&
-        p2.x == other.p2.x && p2.y == other.p2.y &&
-        p3.x == other.p3.x && p3.y == other.p3.y &&
-        p4.x == other.p4.x && p4.y == other.p4.y);
-}
-
-bool Square::operator!=(const Square& other) const noexcept
-{
-    return !(*this == other);
-}
-
-std::ostream& operator<<(std::ostream& os, const Square& square) noexcept 
-{
-    os << "Vertex 1: (" << square.p1.x << ", " << square.p1.y << ")" << std::endl;
-    os << "Vertex 2: (" << square.p2.x << ", " << square.p2.y << ")" << std::endl;
-    os << "Vertex 3: (" << square.p3.x << ", " << square.p3.y << ")" << std::endl;
-    os << "Vertex 4: (" << square.p4.x << ", " << square.p4.y << ")" << std::endl;
-    return os;
 }
 
 std::istream& operator>>(std::istream& is, Square& square) noexcept 
@@ -78,86 +143,40 @@ std::istream& operator>>(std::istream& is, Square& square) noexcept
     return is;
 }
 
-bool Square::isValidSquare() const
-{
-    if (p1.x == p2.x && p2.x == p3.x) { return false; }
-    if (p1.y == p2.y && p2.y == p3.y) { return false; }
-    double side1 = calculateDistance(p1, p2);
-    double side2 = calculateDistance(p2, p3);
-    double side3 = calculateDistance(p3, p4);
-    double side4 = calculateDistance(p4, p1);
-
-    if (side1 == side2 && side2 == side3 && side3 == side4) {
-        double diagonal1 = calculateDistance(p1, p3);
-        double diagonal2 = calculateDistance(p2, p4);
-
-        return diagonal1 == diagonal2;
-    }
-    return false;
-}
-
 
 
 Rectangle::operator double() const noexcept {
-    double side1 = calculateDistance(p1, p2);
-    double side2 = calculateDistance(p2, p3);
+    double side1 = calculateDistance(data[0], data[1]);
+    double side2 = calculateDistance(data[1], data[2]);
     return side1 * side2;
 }
 
-void Rectangle::center() const noexcept
+bool Rectangle::isValidRectangle() const
 {
-    std::cout << "geometric center: ";
-    double result = (p1.x + p2.x + p3.x + p4.x) / 4;
-    std::cout << "x:" << result << " ";
-    result = (p1.y + p2.y + p3.y + p4.y) / 4;
-    std::cout << "y:" << result << std::endl;
+    if (data[0].x == data[1].x && data[1].x == data[2].x) { return false; }
+    if (data[0].y == data[1].y && data[1].y == data[2].y) { return false; }
+    double side1 = calculateDistance(data[0], data[1]);
+    double side2 = calculateDistance(data[1], data[2]);
+    double side3 = calculateDistance(data[2], data[3]);
+    double side4 = calculateDistance(data[3], data[0]);
+
+    double diagonal1 = calculateDistance(data[0], data[2]);
+    double diagonal2 = calculateDistance(data[1], data[3]);
+
+    return (side1 == side3 && side2 == side4 && diagonal1 == diagonal2);
 }
 
 Rectangle::Rectangle(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    : p1(x1, y1), p2(x2, y2), p3(x3, y3), p4(x4, y4) {
+{
+    data = new Point[4];
+    quantity = 4;
+    data[0] = Point(x1, y1);
+    data[1] = Point(x2, y2);
+    data[2] = Point(x3, y3);
+    data[3] = Point(x4, y4);
     if (!isValidRectangle()) {
         throw std::runtime_error("Invalid rectangle vertices");
     }
-}
-
-Rectangle& Rectangle::operator=(const Rectangle& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-    return *this;
-}
-
-Rectangle& Rectangle::operator=(Rectangle&& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-    return *this;
-}
-
-bool Rectangle::operator==(const Rectangle& other) const noexcept
-{
-    return (p1.x == other.p1.x && p1.y == other.p1.y &&
-        p2.x == other.p2.x && p2.y == other.p2.y &&
-        p3.x == other.p3.x && p3.y == other.p3.y &&
-        p4.x == other.p4.x && p4.y == other.p4.y);
-}
-
-bool Rectangle::operator!=(const Rectangle& other) const noexcept
-{
-    return !(*this == other);
-}
-
-std::ostream& operator<<(std::ostream& os, const Rectangle& rectangle) noexcept 
-{
-    os << "Vertex 1: (" << rectangle.p1.x << ", " << rectangle.p1.y << ")" << std::endl;
-    os << "Vertex 2: (" << rectangle.p2.x << ", " << rectangle.p2.y << ")" << std::endl;
-    os << "Vertex 3: (" << rectangle.p3.x << ", " << rectangle.p3.y << ")" << std::endl;
-    os << "Vertex 4: (" << rectangle.p4.x << ", " << rectangle.p4.y << ")" << std::endl;
-    return os;
 }
 
 std::istream& operator>>(std::istream& is, Rectangle& rectangle) noexcept 
@@ -168,94 +187,45 @@ std::istream& operator>>(std::istream& is, Rectangle& rectangle) noexcept
     return is;
 }
 
-bool Rectangle::isValidRectangle() const
-{
-    if (p1.x == p2.x && p2.x == p3.x) { return false; }
-    if (p1.y == p2.y && p2.y == p3.y) { return false; }
-    double side1 = calculateDistance(p1, p2);
-    double side2 = calculateDistance(p2, p3);
-    double side3 = calculateDistance(p3, p4);
-    double side4 = calculateDistance(p4, p1);
-
-    double diagonal1 = calculateDistance(p1, p3);
-    double diagonal2 = calculateDistance(p2, p4);
-
-    return (side1 == side3 && side2 == side4 && diagonal1 == diagonal2);
-}
-
-
 
 
 Trapezoid::operator double() const noexcept {
     double side1, side2, h;
-    if (sides_parallel(p1, p2, p3, p4)) {
-        side1 = calculateDistance(p1, p2);
-        side2 = calculateDistance(p3, p4);
-        if (p1.y - p4.y == p2.y - p3.y) { h = abs(p1.y - p4.y); }
-        else { h = abs(p1.x - p4.x); }
+    if (sides_parallel(data[0], data[1], data[2], data[3])) {
+        side1 = calculateDistance(data[0], data[1]);
+        side2 = calculateDistance(data[2], data[3]);
+        if (data[0].y - data[3].y == data[1].y - data[2].y) { h = abs(data[0].y - data[3].y); }
+        else { h = abs(data[0].x - data[3].x); }
     } else {
-        side1 = calculateDistance(p2, p3);
-        side2 = calculateDistance(p4, p1);
-        if (p2.y - p1.y == p3.y - p4.y) { h = abs(p2.y - p1.y); }
-        else { h = abs(p2.x - p1.x); }
+        side1 = calculateDistance(data[1], data[2]);
+        side2 = calculateDistance(data[3], data[0]);
+        if (data[1].y - data[0].y == data[2].y - data[3].y) { h = abs(data[1].y - data[0].y); }
+        else { h = abs(data[1].x - data[0].x); }
     }
     return 0.5 * (side1 + side2) * h;
 }
 
-void Trapezoid::center() const noexcept
+bool Trapezoid::isValidTrapezoid() const
 {
-    std::cout << "geometric center: ";
-    double result = (p1.x + p2.x + p3.x + p4.x) / 4;
-    std::cout << "x:" << result << " ";
-    result = (p1.y + p2.y + p3.y + p4.y) / 4;
-    std::cout << "y:" << result << std::endl;
+    if (data[0].x == data[1].x && data[1].x == data[2].x) { return false; }
+    if (data[0].y == data[1].y && data[1].y == data[2].y) { return false; }
+    if (sides_parallel(data[0], data[1], data[2], data[3])) {
+        return !(sides_parallel(data[1], data[2], data[3], data[0]));
+    }
+    return sides_parallel(data[1], data[2], data[3], data[0]);
 }
 
 Trapezoid::Trapezoid(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    : p1(x1, y1), p2(x2, y2), p3(x3, y3), p4(x4, y4) {
+{
+    data = new Point[4];
+    quantity = 4;
+    data[0] = Point(x1, y1);
+    data[1] = Point(x2, y2);
+    data[2] = Point(x3, y3);
+    data[3] = Point(x4, y4);
     if (!isValidTrapezoid()) {
         throw std::runtime_error("Invalid trapezoid vertices");
     }
-}
-
-Trapezoid& Trapezoid::operator=(const Trapezoid& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-    return *this;
-}
-
-Trapezoid& Trapezoid::operator=(Trapezoid&& other) noexcept
-{
-    p1 = other.p1;
-    p2 = other.p2;
-    p3 = other.p3;
-    p4 = other.p4;
-    return *this;
-}
-
-bool Trapezoid::operator==(const Trapezoid& other) const noexcept
-{
-    return (p1.x == other.p1.x && p1.y == other.p1.y &&
-        p2.x == other.p2.x && p2.y == other.p2.y &&
-        p3.x == other.p3.x && p3.y == other.p3.y &&
-        p4.x == other.p4.x && p4.y == other.p4.y);
-}
-
-bool Trapezoid::operator!=(const Trapezoid& other) const noexcept
-{
-    return !(*this == other);
-}
-
-std::ostream& operator<<(std::ostream& os, const Trapezoid& trapezoid) noexcept 
-{
-    os << "Vertex 1: (" << trapezoid.p1.x << ", " << trapezoid.p1.y << ")" << std::endl;
-    os << "Vertex 2: (" << trapezoid.p2.x << ", " << trapezoid.p2.y << ")" << std::endl;
-    os << "Vertex 3: (" << trapezoid.p3.x << ", " << trapezoid.p3.y << ")" << std::endl;
-    os << "Vertex 4: (" << trapezoid.p4.x << ", " << trapezoid.p4.y << ")" << std::endl;
-    return os;
 }
 
 std::istream& operator>>(std::istream& is, Trapezoid& trapezoid) noexcept 
@@ -264,21 +234,4 @@ std::istream& operator>>(std::istream& is, Trapezoid& trapezoid) noexcept
     is >> x1 >> y1 >> x2 >> y2 >> x3 >> y3 >> x4 >> y4;
     trapezoid = Trapezoid(x1, y1, x2, y2, x3, y3, x4, y4);
     return is;
-}
-
-bool Trapezoid::isValidTrapezoid() const
-{
-    if (p1.x == p2.x && p2.x == p3.x) { return false; }
-    if (p1.y == p2.y && p2.y == p3.y) { return false; }
-    if (sides_parallel(p1, p2, p3, p4)) {
-        return !(sides_parallel(p2, p3, p4, p1));
-    }
-    return sides_parallel(p2, p3, p4, p1);
-}
-
-bool Trapezoid::sides_parallel(const Point& k1, const Point& k2, const Point& k3, const Point& k4) const
-{
-    if (k1.y - k4.y == k2.y - k3.y) { return true; }
-    if (k1.x - k4.x == k2.x - k3.x) { return true; }
-    return false;
 }

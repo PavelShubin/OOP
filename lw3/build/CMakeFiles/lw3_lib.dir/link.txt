@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblw3_lib.a CMakeFiles/lw3_lib.dir/figure.cpp.o
+/usr/bin/ranlib liblw3_lib.a

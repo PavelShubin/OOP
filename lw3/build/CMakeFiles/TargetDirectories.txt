@@ -1,0 +1,4 @@
+/home/pavel/OOP/lw3/build/CMakeFiles/lw3_lib.dir
+/home/pavel/OOP/lw3/build/CMakeFiles/lw3_test.dir
+/home/pavel/OOP/lw3/build/CMakeFiles/edit_cache.dir
+/home/pavel/OOP/lw3/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/lab3_exe.dir/main.cpp.o -o ../bin/lab3_exe   -L/home/pavel/OOP/lw3/figure.hpp  -Wl,-rpath,/home/pavel/OOP/lw3/figure.hpp liblab3_lib.a 

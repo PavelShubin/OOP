@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/lw3_test.dir/test.cpp.o -o lw3_test   -L/home/pavel/OOP/lw3/figure.hpp  -Wl,-rpath,/home/pavel/OOP/lw3/figure.hpp liblw3_lib.a -lgtest -lgtest_main 
