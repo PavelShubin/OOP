@@ -1,0 +1,4 @@
+/home/pavel/OOP/lw6/tmp/CMakeFiles/lab6_lib.dir
+/home/pavel/OOP/lw6/tmp/CMakeFiles/lab6_exe.dir
+/home/pavel/OOP/lw6/tmp/CMakeFiles/edit_cache.dir
+/home/pavel/OOP/lw6/tmp/CMakeFiles/rebuild_cache.dir

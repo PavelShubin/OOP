@@ -1,252 +1,142 @@
-#include <iostream>
+#include <unordered_map>
+#include <random>
+#include <utility>
 #include <fstream>
-#include <vector>
+#include <iostream>
 
-// Абстрактный базовый класс NPC
-class NPC {
-public:
-    virtual void printInfo() = 0;
-    virtual void attack(NPC* enemy) = 0;
-    virtual bool isAlive() = 0;
-    virtual void accept(class NPCVisitor* visitor) = 0;
-    virtual ~NPC() {}
-};
+#include "NPC.hpp"
+#include "factory.hpp"
 
-// Конкретный класс Медведь
-class Bear : public NPC {
+class DataSaver {
 private:
-    std::string name;
-    int x;
-    int y;
-    bool alive;
+    std::string filename;
 
 public:
-    Bear(const std::string& name, int x, int y) : name(name), x(x), y(y), alive(true) {}
-
-    void printInfo() override {
-        std::cout << "Bear: " << name << " (" << x << ", " << y << ")" << std::endl;
-    }
-
-    void attack(NPC* enemy) override {
-        if (dynamic_cast<Werewolf*>(enemy)) {
-            enemy->accept(this);
-            alive = false;
+    explicit DataSaver(std::string filename) : filename(std::move(filename)) {}
+    void Save(const set_t& arr) const noexcept {
+        std::ofstream fs(filename, std::ios::app);
+        for (const auto &npc: arr) {
+            fs << int(npc->type) << " " << npc->x << " " << npc->y << std::endl;
         }
     }
-
-    bool isAlive() override {
-        return alive;
-    }
-
-    void accept(NPCVisitor* visitor) override;
 };
 
-// Конкретный класс Оборотень
-class Werewolf : public NPC {
+class DataLoader {
 private:
-    std::string name;
-    int x;
-    int y;
-    bool alive;
-
+    std::string filename;
+    void clear() const noexcept {
+        std::ofstream out(filename, std::ios::trunc);
+        out.close();
+    }
 public:
-    Werewolf(const std::string& name, int x, int y) : name(name), x(x), y(y), alive(true) {}
-
-    void printInfo() override {
-        std::cout << "Werewolf: " << name << " (" << x << ", " << y << ")" << std::endl;
-    }
-
-    void attack(NPC* enemy) override {
-        if (dynamic_cast<Robber*>(enemy)) {
-            enemy->accept(this);
-            alive = false;
-        }
-    }
-
-    bool isAlive() override {
-        return alive;
-    }
-
-    void accept(NPCVisitor* visitor) override;
-};
-
-// Конкретный класс Разбойник
-class Robber : public NPC {
-private:
-    std::string name;
-    int x;
-    int y;
-    bool alive;
-
-public:
-    Robber(const std::string& name, int x, int y) : name(name), x(x), y(y), alive(true) {}
-
-    void printInfo() override {
-        std::cout << "Robber: " << name << " (" << x << ", " << y << ")" << std::endl;
-    }
-
-    void attack(NPC* enemy) override {
-        if (dynamic_cast<Bear*>(enemy)) {
-            enemy->accept(this);
-            alive = false;
-        }
-    }
-
-    bool isAlive() override {
-        return alive;
-    }
-
-    void accept(NPCVisitor* visitor) override;
-};
-
-// Посетитель для сохранения NPC в файл
-class NPCSaveVisitor : public NPCVisitor {
-private:
-    std::ofstream file;
-
-public:
-    NPCSaveVisitor(const std::string& filename) : file(filename) {}
-
-    void visit(Bear* bear) override {
-        file << "Bear " << bear->name << " " << bear->x << " " << bear->y << std::endl;
-    }
-
-    void visit(Werewolf* werewolf) override {
-        file << "Werewolf " << werewolf->name << " " << werewolf->x << " " << werewolf->y << std::endl;
-    }
-
-    void visit(Robber* robber) override {
-        file << "Robber " << robber->name << " " << robber->x << " " << robber->y << std::endl;
-    }
-};
-
-// Посетитель для печати NPC на экран
-class NPCPrintVisitor : public NPCVisitor {
-public:
-    void visit(Bear* bear) override {
-        bear->printInfo();
-    }
-
-    void visit(Werewolf* werewolf) override {
-        werewolf->printInfo();
-    }
-
-    void visit(Robber* robber) override {
-        robber->printInfo();
-    }
-};
-
-// Фабрика NPC
-class NPCFactory {
-public:
-    static NPC* create(const std::string& type, const std::string& name, int x, int y) {
-        if (type == "Bear") {
-            return new Bear(name, x, y);
-        }
-        else if (type == "Werewolf") {
-            return new Werewolf(name, x, y);
-        }
-        else if (type == "Robber") {
-            return new Robber(name, x, y);
-        }
-        else {
-            throw std::runtime_error("Invalid NPC type");
-        }
-    }
-};
-
-// Класс битвы
-class Battle {
-private:
-    std::vector<NPC*> npcs;
-    int range;
-
-public:
-    Battle(int range) : range(range) {}
-
-    void addNPC(NPC* npc) {
-        npcs.push_back(npc);
-    }
-
-    void start() {
-        for (auto npc : npcs) {
-            for (auto enemy : npcs)
-{
-                if (npc != enemy && distance(npc, enemy) <= range) {
-                    npc->attack(enemy);
-                }
+    explicit DataLoader(std::string filename) : filename(std::move(filename)) {}
+    [[nodiscard]] set_t Load() const noexcept {
+        set_t arr;
+        std::ifstream fs(filename);
+        int npcType;
+        int x;
+        int y;
+        while(fs >> npcType >> x >> y) {
+            auto createdNpc = Factory::Create(NPCType(npcType), x, y);
+            if(createdNpc) {
+                arr.insert(std::move(createdNpc));
             }
         }
 
-        npcs.erase(std::remove_if(npcs.begin(), npcs.end(), [](NPC* npc) { return !npc->isAlive(); }), npcs.end());
-    }
+        fs.close();
 
-    void printNPCs() {
-        for (auto npc : npcs) {
-            npc->printInfo();
-        }
-    }
+        this -> clear();
 
-    void saveToFile(const std::string& filename) {
-        NPCSaveVisitor visitor(filename);
-
-        for (auto npc : npcs) {
-            npc->accept(&visitor);
-        }
-    }
-
-private:
-    float distance(NPC* npc1, NPC* npc2) {
-        int dx = npc1->getX() - npc2->getX();
-        int dy = npc1->getY() - npc2->getY();
-        return std::sqrt(dx * dx + dy * dy);
+        return arr;
     }
 };
 
-// Реализация метода accept для Медведя
-void Bear::accept(NPCVisitor* visitor) {
-    visitor->visit(this);
-}
+std::unordered_map<std::string, NPCType> types = {
+    {"bear", NPCType::BearType},
+    {"werewolf", NPCType::WerewolfType},
+    {"outlaw", NPCType::OutlawType}
+};
 
-// Реализация метода accept для Оборотня
-void Werewolf::accept(NPCVisitor* visitor) {
-    visitor->visit(this);
-}
+set_t Fight(const set_t& array, size_t distance)
+{
+    set_t dead_list;
 
-// Реализация метода accept для Разбойника
-void Robber::accept(NPCVisitor* visitor) {
-    visitor->visit(this);
+    for (const auto &attacker : array) {
+        for (const auto &defender : array) {
+            if ((attacker != defender) && (dead_list.find(defender) == dead_list.end()) && (attacker->is_close(defender, distance))) {
+                bool win = defender->accept(attacker);
+                if (!win) {
+                    dead_list.insert(defender);
+                }
+            }
+        }
+    }
+
+    return dead_list;
 }
 
 int main() {
-    Battle battle(100); // Дальность боя 100
+    DataSaver saver("data.txt");
+    DataLoader loader("data.txt");
 
-    NPC* bear = NPCFactory::create("Bear", "Yogi", 100, 100);
-    NPC* werewolf = NPCFactory::create("Werewolf", "Wolfie", 200, 200);
-    NPC* robber = NPCFactory::create("Robber", "Bandit", 300, 300);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(0, 500);
+    
+    std::cout << "\t\tUSAGE" << std::endl;
+    std::cout << "create <NPC type> <x> <y>: create NPC" << std::endl;
+    std::cout << "save: save state of map" << std::endl;
+    std::cout << "load: load map" << std::endl;
+    std::cout << "fight <range of attack>: start fight" << std::endl;
 
-    battle.addNPC(bear);
-    battle.addNPC(werewolf);
-    battle.addNPC(robber);
+    set_t array;
+    for(int i = 0; i < 7; ++i) {
+        auto npcTypeKey = (i % 2 == 0) ? "bear" : "werewolf";
+        NPCType npcType = types[npcTypeKey];
+        auto npc = Factory::Create(npcType, dis(gen), dis(gen));
+        if(npc) {
+            array.insert(std::move(npc));
+        }
+    }
 
-    // Печать NPC на экран
-    NPCPrintVisitor printVisitor;
-    bear->accept(&printVisitor);
-    werewolf->accept(&printVisitor);
-    robber->accept(&printVisitor);
-
-    // Сохранение NPC в файл
-    battle.saveToFile("npcs.txt");
-
-    // Запуск боевого режима
-    battle.start();
-
-    // Печать оставшихся NPC на экран
-    battle.printNPCs();
-
-    delete bear;
-    delete werewolf;
-    delete robber;
-
+    std::string action;
+    while(std::cin >> action) {
+        if(action == "create") {
+            std::string npcTypeKey;
+            int x, y;
+            std::cin >> npcTypeKey >> x >> y;
+            if(types.find(npcTypeKey) != types.end()) {
+                auto npcType = types[npcTypeKey];
+                auto npc = Factory::Create(npcType, x, y);
+                if(npc) {
+                    array.insert(std::move(npc));
+                }
+                std::cout << "Created!" << std::endl;
+            } 
+            else {
+                std::cout << "Invalid NPC type!" << std::endl;
+            }
+        } else if(action == "save") {
+            saver.Save(array);
+            std::cout << "Saved!" << std::endl;
+        } else if(action == "load") {
+            array = loader.Load();
+            std::cout << "Loaded!" << std::endl;
+        } else if(action == "fight") {
+            int range;
+            std::cin >> range;
+            set_t dead_list = Fight(array, range);
+            std::cout << "\nDead: " << dead_list.size() << std::endl;
+            for(auto& npc : dead_list) {
+                std::cout << *npc << std::endl;
+            }
+            std::cout << std::endl;
+            for(const auto& npc : dead_list) {
+                array.erase(npc);
+            }
+        } else {
+            std::cout << "Wrong command!" << std::endl;
+        }
+    }
     return 0;
 }
