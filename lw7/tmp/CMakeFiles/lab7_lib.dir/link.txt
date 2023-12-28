@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblab7_lib.a CMakeFiles/lab7_lib.dir/src/NPC.cpp.o CMakeFiles/lab7_lib.dir/src/bear.cpp.o CMakeFiles/lab7_lib.dir/src/outlaw.cpp.o CMakeFiles/lab7_lib.dir/src/werewolf.cpp.o
+/usr/bin/ranlib liblab7_lib.a

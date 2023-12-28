@@ -1,0 +1,92 @@
+
+Murder --------
+Bear Natalie { x:0, y:55} 
+Werewolf Nastya { x:4, y:64} 
+
+Murder --------
+Werewolf Nikita { x:13, y:50} 
+Outlaw Natalie { x:35, y:18} 
+
+Murder --------
+Werewolf Anton { x:33, y:54} 
+Outlaw Pavel { x:11, y:47} 
+
+Murder --------
+Werewolf Artem { x:54, y:64} 
+Outlaw Artem { x:20, y:72} 
+
+Murder --------
+Werewolf Max { x:51, y:43} 
+Outlaw Anton { x:23, y:23} 
+
+Murder --------
+Werewolf Anton { x:74, y:8} 
+Outlaw Papich { x:49, y:25} 
+
+Murder --------
+Werewolf Max { x:77, y:56} 
+Outlaw Nastya { x:97, y:63} 
+
+Murder --------
+Bear Nikita { x:51, y:69} 
+Werewolf Papich { x:51, y:77} 
+
+Murder --------
+Bear Natalie { x:12, y:87} 
+Werewolf Gleb { x:8, y:96} 
+
+Murder --------
+Bear Robert { x:24, y:54} 
+Werewolf Anton { x:33, y:54} 
+
+Murder --------
+Bear Robert { x:21, y:57} 
+Werewolf Natalie { x:15, y:53} 
+
+Murder --------
+Werewolf Pavel { x:2, y:18} 
+Outlaw Gleb { x:6, y:16} 
+
+Murder --------
+Outlaw Nikita { x:44, y:71} 
+Bear Pavel { x:37, y:70} 
+
+Murder --------
+Werewolf Artem { x:38, y:45} 
+Outlaw Robert { x:31, y:23} 
+
+Murder --------
+Werewolf Nikita { x:43, y:1} 
+Outlaw Robert { x:38, y:35} 
+
+Murder --------
+Bear Gleb { x:1, y:80} 
+Werewolf Artem { x:4, y:83} 
+
+Murder --------
+Werewolf Max { x:81, y:66} 
+Outlaw Papich { x:61, y:88} 
+
+Murder --------
+Bear Robert { x:23, y:66} 
+Werewolf Artem { x:23, y:74} 
+
+Murder --------
+Bear Papich { x:30, y:14} 
+Werewolf Nikita { x:40, y:14} 
+
+Murder --------
+Werewolf Natalie { x:18, y:29} 
+Outlaw Anton { x:49, y:21} 
+
+Murder --------
+Werewolf Gleb { x:71, y:17} 
+Outlaw Robert { x:73, y:6} 
+
+Murder --------
+Werewolf Artem { x:40, y:38} 
+Outlaw Robert { x:69, y:27} 
+
+Murder --------
+Werewolf Anton { x:29, y:77} 
+Outlaw Natalie { x:29, y:87} 
